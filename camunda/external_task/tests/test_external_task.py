@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from camunda.external_task.external_task import ExternalTask
+from camunda.external_task import ExternalTask
 
 
 class ExternalTaskTest(TestCase):
