@@ -57,28 +57,28 @@ class ExternalTask:
 
 class TaskResult:
 
-    def __init__(self, task, success=False, global_variables={}, local_variables={}, bpmn_error_code=None,
-                 error_message=None, error_details={}, retries=0, retry_timeout=300000):
+    def __init__(self, task, success=False, global_variables=None, local_variables=None, bpmn_error_code=None,
+                 error_message=None, error_details=None, retries=0, retry_timeout=300000):
         self.task = task
         self.success_state = success
-        self.global_variables = global_variables
-        self.local_variables = local_variables
+        self.global_variables = global_variables or {}
+        self.local_variables = local_variables or {}
         self.bpmn_error_code = bpmn_error_code
         self.error_message = error_message
-        self.error_details = error_details
+        self.error_details = error_details or {}
         self.retries = retries
         self.retry_timeout = retry_timeout
 
     @classmethod
-    def undetermined(cls, task, global_variables={}, local_variables={}):
+    def undetermined(cls, task, global_variables=None, local_variables=None):
         return TaskResult(task, success=None, global_variables=global_variables, local_variables=local_variables)
 
     @classmethod
-    def success(cls, task, global_variables, local_variables={}):
+    def success(cls, task, global_variables=None, local_variables=None):
         return TaskResult(task, success=True, global_variables=global_variables, local_variables=local_variables)
 
     @classmethod
-    def failure(cls, task, error_message, error_details, retries, retry_timeout):
+    def failure(cls, task, error_message, error_details=None, retries=None, retry_timeout=None):
         return TaskResult(task, success=False, error_message=error_message, error_details=error_details,
                           retries=retries, retry_timeout=retry_timeout)
 
