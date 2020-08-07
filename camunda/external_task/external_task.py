@@ -8,6 +8,9 @@ class ExternalTask:
         self._variables = Variables(context.get("variables", {}))
         self._task_result = TaskResult.empty_task_result(task=self)
 
+    def get_business_key(self):
+        return self._context["businessKey"]
+
     def get_worker_id(self):
         return self._context["workerId"]
 
@@ -67,6 +70,10 @@ class TaskResult:
         self.retry_timeout = retry_timeout
 
     @classmethod
+    def undetermined(cls, task, global_variables={}, local_variables={}):
+        return TaskResult(task, success=None, global_variables=global_variables, local_variables=local_variables)
+
+    @classmethod
     def success(cls, task, global_variables, local_variables={}):
         return TaskResult(task, success=True, global_variables=global_variables, local_variables=local_variables)
 
@@ -85,6 +92,9 @@ class TaskResult:
 
     def is_success(self):
         return self.success_state and self.bpmn_error_code is None and self.error_message is None
+
+    def is_undetermined(self):
+        return self.success_state is None and self.bpmn_error_code is None and self.error_message is None
 
     def is_failure(self):
         return not self.success_state and self.error_message is not None

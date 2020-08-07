@@ -27,7 +27,9 @@ class ExternalTaskExecutor:
         task = task_result.get_task()
         topic = task.get_topic_name()
         task_id = task.get_task_id()
-        if task_result.is_success():
+        if task_result.is_undetermined():
+            self._handle_task_undetermined(task_id, task_result, topic)
+        elif task_result.is_success():
             self._handle_task_success(task_id, task_result, topic)
         elif task_result.is_failure():
             self._handle_task_failure(task_id, task_result, topic)
@@ -37,6 +39,9 @@ class ExternalTaskExecutor:
             err_msg = f"task result for task_id={task_id} must be either complete/failure/BPMNError"
             self._log_with_context(err_msg, task_id=task_id, log_level='warning')
             raise Exception(err_msg)
+
+    def _handle_task_undetermined(self, task_id, task_result, topic):
+        self._log_with_context(f"Task result not yet determined - Topic: {topic}", task_id)
 
     def _handle_task_success(self, task_id, task_result, topic):
         self._log_with_context(f"Marking task complete for Topic: {topic}", task_id)
