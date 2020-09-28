@@ -41,8 +41,8 @@ class ExternalTaskWorker:
         self._execute_tasks(tasks, action)
 
     def _fetch_and_lock(self, topic_names, process_variables=None):
-        self._log_with_context(f"Fetching and Locking external tasks for Topics: {topic_names} "
-                               f"with Process variables: {process_variables}")
+        # self._log_with_context(f"Fetching and Locking external tasks for Topics: {topic_names} "
+        #                        f"with Process variables: {process_variables}")
         return self.client.fetch_and_lock(topic_names, process_variables)
 
     def _parse_response(self, resp_json, topic_names):
@@ -53,7 +53,8 @@ class ExternalTaskWorker:
                 tasks.append(task)
 
         tasks_count = len(tasks)
-        self._log_with_context(f"{tasks_count} External task(s) found for Topics: {topic_names}")
+        if tasks_count:
+            self._log_with_context(f"{tasks_count} External task(s) found for Topics: {topic_names}")
         return tasks
 
     def _execute_tasks(self, tasks, action):
